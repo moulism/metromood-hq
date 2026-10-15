@@ -1,0 +1,11 @@
+{
+  "liveServer.settings.port": 5510,
+  "liveServer.settings.root": "/",
+  "liveServer.settings.ignoreFiles": [".vscode/**", "supabase/**", "seed/**"],
+  "files.exclude": { "**/.DS_Store": true },
+  "editor.tabSize": 2,
+  "deno.enablePaths": ["supabase/functions"],
+  "git.autofetch": true,
+  "git.enableSmartCommit": true,
+  "git.confirmSync": false
+}

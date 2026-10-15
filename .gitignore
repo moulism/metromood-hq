@@ -1,0 +1,5 @@
+.DS_Store
+**/.DS_Store
+# Brand plán a další interní podklady – nahrávají se jen do Supabase, nikdy na GitHub
+seed/
+node_modules/

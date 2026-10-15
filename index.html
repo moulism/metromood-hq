@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>MetroMood HQ</title>
+  <meta name="theme-color" content="#1a1b1d" />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icons/icon.svg" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&display=swap" />
+  <link rel="stylesheet" href="css/app.css" />
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem("mm-theme");
+        if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <div id="app">
+    <div class="boot"><span class="logo"><span class="logo-dot"></span><span>MetroMood</span><span class="logo-hq">HQ</span></span></div>
+  </div>
+  <noscript>MetroMood HQ potřebuje zapnutý JavaScript.</noscript>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

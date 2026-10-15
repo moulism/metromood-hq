@@ -1,0 +1,9 @@
+{
+  "name": "MetroMood HQ",
+  "short_name": "MM HQ",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#1a1b1d",
+  "theme_color": "#1a1b1d",
+  "icons": [{ "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
