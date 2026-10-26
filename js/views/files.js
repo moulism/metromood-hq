@@ -1,6 +1,7 @@
 import { sb, q } from "../supabase.js";
 import { h, state, modal, form, toast, errToast, confirmDialog, pageHead, loading, empty, fmtDate, fmtSize, avatar } from "../ui.js";
 import { signedUrl, uploadFile, deleteFile, isImage, isPdf, isVideo, fileIcon } from "../storage.js";
+import { importFolder, fromInput, fromDrop } from "../folder-import.js";
 
 export async function previewFile(f) {
   try {
@@ -29,16 +30,27 @@ export function thumb(f) {
 export default async function view(root, [folderId]) {
   const body = h("div", loading());
   const input = h("input", { type: "file", multiple: true, hidden: true, onchange: (e) => upload([...e.target.files]) });
+  const dirInput = h("input", { type: "file", multiple: true, hidden: true, webkitdirectory: "", onchange: (e) => {
+    const items = fromInput(e.target.files); dirInput.value = "";
+    if (items.length) importFolder(items, current, load);
+  } });
   let current = folderId || null;
   let folders = [], filesList = [];
   const crumbs = h("nav.crumbs", { "aria-label": "Cesta" });
   root.append(
-    pageHead("Soubory", "Loga, návrhy, fotky, dokumenty. Přetáhni soubory sem nebo použij tlačítko.",
+    pageHead("Soubory", "Loga, návrhy, fotky, dokumenty. Přetáhni sem soubory nebo celou složku.",
       h("button.btn.ghost", { onclick: newFolder }, "Nová složka"),
-      h("button.btn.primary", { onclick: () => input.click() }, "Nahrát soubory"), input),
+      h("button.btn", { onclick: () => dirInput.click() }, "Nahrát složku"),
+      h("button.btn.primary", { onclick: () => input.click() }, "Nahrát soubory"), input, dirInput),
     crumbs, body);
 
-  const drop = (e) => { e.preventDefault(); root.classList.remove("dragging"); if (e.dataTransfer.files.length) upload([...e.dataTransfer.files]); };
+  const drop = async (e) => {
+    e.preventDefault(); root.classList.remove("dragging");
+    const files = [...e.dataTransfer.files];
+    const tree = await fromDrop(e.dataTransfer.items || []).catch(() => null);
+    if (tree) importFolder(tree, current, load);
+    else if (files.length) upload(files);
+  };
   const over = (e) => { e.preventDefault(); root.classList.add("dragging"); };
   const leave = (e) => { if (e.target === root) root.classList.remove("dragging"); };
   root.addEventListener("dragover", over); root.addEventListener("drop", drop); root.addEventListener("dragleave", leave);

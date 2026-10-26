@@ -54,6 +54,12 @@ supabase/schema.sql   popis databáze
 seed/                 interní soubory k jednorázovému nahrání (NEJDE na GitHub)
 ```
 
+## Nahrání celé složky
+
+V **Soubory** klikni **Nahrát složku** (nebo složku přetáhni do okna) a vyber třeba `Desktop/FOLDER/work/MetroMood`. Struktura podsložek zůstane, systémové soubory (.DS_Store, ~$…) se přeskočí. Před nahráním vidíš velikost každé podsložky a kolik je volného místa – co se nevejde, odškrtni. Když se nahrávání přeruší, spusť ho znovu: už nahrané soubory se přeskočí.
+
+Free plán Supabase: max 50 MB na soubor a 1 GB celkem. Při přechodu na Pro změň limity v `js/config.js`.
+
 ## Supabase
 
 - Dashboard: https://supabase.com/dashboard/project/nogomyljbcpmteclpxny

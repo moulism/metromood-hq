@@ -177,7 +177,8 @@ export function fmtSize(b) {
   if (b == null) return "";
   if (b < 1024) return `${b} B`;
   if (b < 1048576) return `${(b / 1024).toFixed(0)} kB`;
-  return `${(b / 1048576).toFixed(1)} MB`;
+  if (b < 1073741824) return `${(b / 1048576).toFixed(1)} MB`;
+  return `${(b / 1073741824).toFixed(2)} GB`;
 }
 export function startOfWeek(d = new Date()) {
   const x = new Date(d); x.setHours(0, 0, 0, 0);

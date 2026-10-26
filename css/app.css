@@ -558,3 +558,17 @@ details.panel summary { cursor: pointer; font-weight: 700; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* ---------- import celé složky ---------- */
+.import-groups { display: grid; gap: 4px; margin: 12px 0; }
+.import-group { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; padding: 8px 10px; border: 1px solid var(--rule); border-radius: 8px; cursor: pointer; }
+.import-group input { width: 18px; height: 18px; accent-color: var(--signal); }
+.import-name { font-weight: 600; overflow-wrap: anywhere; }
+.import-sum { margin: 8px 0; }
+.import-skip { margin-top: 8px; }
+.import-skip summary { cursor: pointer; color: var(--muted); }
+.import-skip ul { max-height: 180px; overflow-y: auto; padding-left: 18px; overflow-wrap: anywhere; }
+.import-progress { position: fixed; right: 16px; bottom: 16px; z-index: 60; width: min(360px, calc(100vw - 32px)); background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 12px 14px; box-shadow: 0 20px 50px -20px rgba(0, 0, 0, .5); display: grid; gap: 8px; font-size: .9rem; }
+.import-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.import-bar { height: 8px; background: var(--rule); border-radius: 99px; overflow: hidden; }
+.import-bar-fill { height: 100%; width: 0; background: var(--signal); transition: width .2s; }

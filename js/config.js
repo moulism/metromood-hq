@@ -10,5 +10,10 @@ export const BUCKET = "team";
 // do složky Dokumenty. Složka /seed je v .gitignore, takže nikdy nejde na GitHub.
 export const SEED_FILES = [
   { local: "seed/MetroMood-BrandPlan.pdf", name: "MetroMood-BrandPlan.pdf", folder: "Dokumenty",
-    description: "Plán restartu značky (listopad 2026 – duben 2027)" },
+    description: "Plán restartu značky – start 1. 11. 2026 (verze z 26. 10. 2026)" },
 ];
+
+// Limity Supabase (free plán): 50 MB na soubor, 1 GB celkem ve storage.
+// Při přechodu na Pro plán stačí tady zvýšit (a v Supabase → Storage → Settings).
+export const MAX_FILE_BYTES = 50 * 1024 * 1024;
+export const STORAGE_LIMIT_BYTES = 1024 * 1024 * 1024;
