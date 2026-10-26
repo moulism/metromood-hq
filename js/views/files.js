@@ -2,6 +2,7 @@ import { sb, q } from "../supabase.js";
 import { h, state, modal, form, toast, errToast, confirmDialog, pageHead, loading, empty, fmtDate, fmtSize, avatar } from "../ui.js";
 import { signedUrl, uploadFile, deleteFile, isImage, isPdf, isVideo, fileIcon } from "../storage.js";
 import { importFolder, fromInput, fromDrop } from "../folder-import.js";
+import { BUCKET } from "../config.js";
 
 export async function previewFile(f) {
   try {
@@ -131,10 +132,31 @@ export default async function view(root, [folderId]) {
     } }, "Uložit")] });
   }
   async function removeFolder(fo) {
-    const cnt = await q(sb.from("files").select("id", { count: "exact" }).eq("folder_id", fo.id));
-    if (cnt.length || folders.some((x) => x.parent_id === fo.id)) return toast("Složka není prázdná. Nejdřív smaž soubory a podsložky.", "err");
-    if (!(await confirmDialog(`Smazat složku „${fo.name}“?`))) return;
-    try { await q(sb.from("folders").delete().eq("id", fo.id)); location.hash = fo.parent_id ? `#/soubory/${fo.parent_id}` : "#/soubory"; } catch (e) { errToast(e); }
+    // celý strom: složka + všechny podsložky
+    const ids = [fo.id];
+    for (let i = 0; i < ids.length; i++) folders.filter((x) => x.parent_id === ids[i]).forEach((x) => ids.push(x.id));
+    let inside = [];
+    try {
+      for (let i = 0; i < ids.length; i += 100) inside.push(...await q(sb.from("files").select("id,storage_path,size").in("folder_id", ids.slice(i, i + 100))));
+    } catch (e) { return errToast(e); }
+    const subCount = ids.length - 1;
+    if ((inside.length || subCount) && !state.isOwner) return toast("Složka není prázdná. Celou ji může smazat jen majitel.", "err");
+    const what = inside.length || subCount
+      ? `Smazat složku „${fo.name}“ i s obsahem (${inside.length} souborů, ${fmtSize(inside.reduce((s, f) => s + (Number(f.size) || 0), 0))}${subCount ? `, ${subCount} podsložek` : ""})? Soubory se smažou natrvalo.`
+      : `Smazat složku „${fo.name}“?`;
+    if (!(await confirmDialog(what))) return;
+    try {
+      for (let i = 0; i < inside.length; i += 100) {
+        const chunk = inside.slice(i, i + 100);
+        const { error } = await sb.storage.from(BUCKET).remove(chunk.map((f) => f.storage_path));
+        if (error) throw error;
+        await q(sb.from("files").delete().in("id", chunk.map((f) => f.id)));
+      }
+      for (const id of ids.slice().reverse()) await q(sb.from("folders").delete().eq("id", id));
+      toast(`Složka „${fo.name}“ smazána`);
+      location.hash = fo.parent_id ? `#/soubory/${fo.parent_id}` : "#/soubory";
+      if (!fo.parent_id && current === null) load();
+    } catch (e) { errToast(e); load(); }
   }
 
   await load();
