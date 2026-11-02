@@ -58,6 +58,15 @@ async function releasePath(path, selfId) {
     await sb.storage.from(BUCKET).remove([path]);
   } catch (e) { console.warn(e); }
 }
+/** Smaže tech pack; soubory uklidí na pozadí (kopie můžou sdílet fotky). */
+async function deletePack(tp) {
+  const d = tp.data || {};
+  const own = [...(d.photos || []).map((p) => p.path), ...(d.flats || []).map((f) => f.path), ...(d.branding || []).map((b) => b.artwork)].filter(Boolean);
+  const gone = await q(sb.from("tech_packs").delete().eq("id", tp.id).select("id"));
+  if (!gone?.length) throw new Error("Tech pack se nepodařilo smazat (nemáš oprávnění, nebo už neexistuje).");
+  toast(`„${tp.name}“ smazán`);
+  (async () => { for (const p of own) await releasePath(p, tp.id); })();
+}
 function pickFiles(accept, multiple, cb) {
   const i = h("input", { type: "file", accept, multiple, hidden: true, onchange: () => { cb([...i.files]); i.remove(); } });
   document.body.appendChild(i); i.click();
@@ -128,7 +137,11 @@ async function list(root) {
           h("div.tp-card-foot",
             h("span.small", { class: tbc ? "tp-tbc" : "tp-ok" }, tbc ? `${tbc} k potvrzení` : "Vše potvrzeno"),
             h("span.muted.small", `upraveno ${fmtDate(r.updated_at)}`),
-            h("button.btn.ghost.small", { onclick: () => create(r) }, "Duplikovat"))));
+            h("button.btn.ghost.small", { onclick: () => create(r) }, "Duplikovat"),
+            h("button.icon-btn", { title: "Smazat tech pack", "aria-label": `Smazat ${r.name}`, onclick: async () => {
+              if (!(await confirmDialog(`Smazat tech pack „${r.name}“? Nedá se vrátit.`))) return;
+              try { await deletePack(r); load(); } catch (e) { errToast(e); }
+            } }, "✕"))));
     })));
   }
   await load();
@@ -516,13 +529,8 @@ async function editor(root, id) {
         h("hr"),
         h("div.row", h("button.btn.ghost.small.danger-text", { type: "button", onclick: async () => {
           if (!(await confirmDialog(`Smazat tech pack „${tp.name}“? Nedá se vrátit.`))) return;
-          try {
-            const own = [...(d.photos || []).map((p) => p.path), ...(d.flats || []).map((f) => f.path), ...(d.branding || []).map((b) => b.artwork)].filter(Boolean);
-            await q(sb.from("tech_packs").delete().eq("id", tp.id));
-            dirty = false; clearTimeout(timer);
-            for (const p of own) await releasePath(p, tp.id);
-            location.hash = "#/techpack";
-          } catch (e) { errToast(e); }
+          dirty = false; clearTimeout(timer);
+          try { await deletePack(tp); location.hash = "#/techpack"; } catch (e) { errToast(e); }
         } }, "Smazat tech pack"))));
   }
 

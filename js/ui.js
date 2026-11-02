@@ -84,8 +84,8 @@ export function confirmDialog(text, okLabel = "Smazat") {
   return new Promise((res) => {
     const m = modal("Opravdu?", h("p", text), {
       actions: [
-        h("button.btn.ghost", { onclick: () => { m.close(); res(false); } }, "Zpět"),
-        h("button.btn.danger", { onclick: () => { m.close(); res(true); } }, okLabel),
+        h("button.btn.ghost", { onclick: () => { res(false); m.close(); } }, "Zpět"),
+        h("button.btn.danger", { onclick: () => { res(true); m.close(); } }, okLabel),
       ],
       onClose: () => res(false),
     });
