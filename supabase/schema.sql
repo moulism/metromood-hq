@@ -84,3 +84,9 @@ end $$;
 
 -- ============ REALTIME ============
 -- publication supabase_realtime: messages, tasks
+
+-- ============ TECH PACKY ============
+-- tech_packs: id, name, sku, drop_id → drops, category, status (draft/review/sent/approved), version,
+--   data jsonb (overview, photos, flats, callouts, bom, colors, pom, construction, branding, labels, qc, summary),
+--   created_by → members, created_at, updated_at.  RLS: vše using (public.is_member()).
+-- Fotky / nákresy / grafiky: storage bucket 'team', cesta techpacks/<id>/<uuid>.<ext>

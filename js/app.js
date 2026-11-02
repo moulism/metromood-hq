@@ -8,6 +8,7 @@ import calendar from "./views/calendar.js";
 import chat from "./views/chat.js";
 import files from "./views/files.js";
 import drops from "./views/drops.js";
+import techpack from "./views/techpack.js";
 import content from "./views/content.js";
 import ideas from "./views/ideas.js";
 import contacts from "./views/contacts.js";
@@ -25,6 +26,7 @@ const ROUTES = [
   { id: "chat", label: "Chat", view: chat, mobile: true },
   { id: "soubory", label: "Soubory", view: files, mobile: true },
   { id: "dropy", label: "Dropy", view: drops },
+  { id: "techpack", label: "Tech packy", view: techpack },
   { id: "obsah", label: "Obsah", view: content },
   { id: "napady", label: "Nápady", view: ideas },
   { id: "kontakty", label: "Kontakty", view: contacts },
